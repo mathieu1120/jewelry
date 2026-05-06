@@ -34,8 +34,6 @@ export async function POST(req: NextRequest) {
 }
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
-  console.log("SESSION SHIPPING:", JSON.stringify(session.shipping_details));
-  console.log("SESSION CUSTOMER:", JSON.stringify(session.customer_details));
   const productId = session.metadata?.productId;
   if (!productId) {
     console.error("No productId in session metadata");
@@ -49,8 +47,8 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   }
 
   const product = productSnap.data()!;
-  const address = session.shipping_details?.address;
-  const customerName = session.shipping_details?.name ?? session.customer_details?.name ?? "";
+  const address = session.customer_details?.address;
+  const customerName = session.customer_details?.name ?? "";
 
   // Build the order
   const orderData = {
