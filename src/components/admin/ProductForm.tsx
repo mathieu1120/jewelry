@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createProduct, updateProduct } from "@/lib/db";
 import { uploadProductImage } from "@/lib/storage";
-import type { Product, ProductFormData } from "@/types";
+import type { Product } from "@/types";
 
 interface Props {
   product?: Product;
@@ -19,6 +19,7 @@ export default function ProductForm({ product, onSave, onCancel }: Props) {
   const [price, setPrice] = useState(product ? String(product.price / 100) : "");
   const [category, setCategory] = useState(product?.category ?? "");
   const [stock, setStock] = useState(product ? String(product.stock) : "1");
+  const [isSold, setIsSold] = useState(product?.sold ?? false);
   const [images, setImages] = useState<string[]>(product?.images ?? []);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [saving, setSaving] = useState(false);
@@ -46,13 +47,14 @@ export default function ProductForm({ product, onSave, onCancel }: Props) {
 
       const allImages = [...images, ...uploadedUrls];
 
-      const data: ProductFormData = {
+      const data = {
         title,
         description,
         price: priceInCents,
         category,
         stock: parseInt(stock, 10),
         images: allImages,
+        sold: isSold,
       };
 
       if (isEdit) {
@@ -106,6 +108,16 @@ export default function ProductForm({ product, onSave, onCancel }: Props) {
         <div>
           <label className="label">Stock</label>
           <input className="input" type="number" min="0" value={stock} onChange={(e) => setStock(e.target.value)} />
+        </div>
+        <div className="flex items-center gap-2 pt-1">
+          <input
+              type="checkbox"
+              id="sold"
+              checked={isSold}
+              onChange={(e) => setIsSold(e.target.checked)}
+              className="w-4 h-4"
+          />
+          <label htmlFor="sold" className="text-sm text-gray-700">Mark as sold</label>
         </div>
       </div>
 
