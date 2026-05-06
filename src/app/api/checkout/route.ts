@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
             currency: "usd",
             product_data: {
               name: product.title,
-              description: product.description,
+              ...(product.description && { description: product.description }),
               images: product.images?.slice(0, 1) ?? [],
             },
             unit_amount: product.price, // already in cents
