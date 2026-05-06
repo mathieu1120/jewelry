@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { getProduct } from "@/lib/db";
+import { adminDb } from "@/lib/firebase-admin";
+import type { Product } from "@/types";
 import BuyButton from "@/components/shop/BuyButton";
 import { formatPrice } from "@/lib/utils";
 
@@ -11,8 +12,15 @@ interface Props {
 }
 
 export default async function ProductPage({ params }: Props) {
-  const product = await getProduct(params.id);
-  if (!product) notFound();
+    const snap = await adminDb.collection("products").doc(params.id).get();
+    if (!snap.exists) notFound();
+    const data = snap.data()!;
+    const product: Product = {
+        ...data as Omit<Product, "id" | "createdAt" | "updatedAt">,
+        id: snap.id,
+        createdAt: data.createdAt?.toDate?.().toISOString() ?? new Date().toISOString(),
+        updatedAt: data.updatedAt?.toDate?.().toISOString() ?? new Date().toISOString(),
+    };
 
   return (
     <main className="max-w-4xl mx-auto px-4 py-12">
