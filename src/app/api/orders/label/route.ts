@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
     const label = await shippoRes.json();
 
     if (label.status !== "SUCCESS") {
-      console.error("Shippo error:", label.messages);
+      console.error("Shippo error full response:", JSON.stringify(label));
       return NextResponse.json(
         { error: "Label creation failed", details: label.messages },
         { status: 500 }
