@@ -34,6 +34,8 @@ export async function POST(req: NextRequest) {
 }
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
+  console.log("SESSION SHIPPING:", JSON.stringify(session.shipping_details));
+  console.log("SESSION CUSTOMER:", JSON.stringify(session.customer_details));
   const productId = session.metadata?.productId;
   if (!productId) {
     console.error("No productId in session metadata");
