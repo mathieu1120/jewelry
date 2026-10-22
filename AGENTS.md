@@ -1,0 +1,60 @@
+# Repository Guidelines
+
+## Agent Operating Rules
+
+- Inspect relevant existing code before modifying it.
+- Make the smallest change necessary for the requested task; do not refactor unrelated code.
+- Add dependencies only when necessary to complete the task.
+- Do not commit or push unless explicitly requested.
+- Do not modify production data or external services unless explicitly requested.
+
+## Project Structure & Module Organization
+
+This is a Next.js 14 App Router storefront using TypeScript, Firebase, Stripe, and Shippo.
+
+- `src/app/`: storefront, product details, checkout success, and admin pages; `api/` contains checkout, Stripe webhook, and shipping-label handlers.
+- `src/components/shop/` and `src/components/admin/`: reusable customer and admin UI.
+- `src/lib/`: Firebase client/Admin initialization, database helpers, storage uploads, Stripe setup, and utilities.
+- `src/hooks/`: admin authentication hook; `src/types/index.ts`: shared domain types.
+- `src/app/globals.css` and `tailwind.config.ts`: global styling and theme configuration. Product images use Firebase Storage.
+
+## Build, Test, and Development Commands
+
+- `npm install`: install dependencies.
+- `npm run dev`: start development at `http://localhost:3000`; admin lives at `/admin`.
+- `npm run build`: compile the production application and check types.
+- `npm start`: serve the production build.
+- `npm run lint`: invoke Next.js ESLint; no ESLint configuration is currently checked in, so initial setup may be required.
+- `stripe listen --forward-to localhost:3000/api/webhooks/stripe`: forward development payment events; configure the emitted signing secret locally.
+
+## Coding Style & Naming Conventions
+
+Use strict TypeScript, two-space indentation, double quotes, and semicolons, matching existing files. Use PascalCase for components and types, camelCase for functions and variables, and `use` prefixes for hooks. Follow App Router filenames (`page.tsx`, `layout.tsx`, `route.ts`) and use `@/` imports for modules under `src/`. Keep shared types in `src/types/` and monetary amounts in integer cents. Use Tailwind utilities and existing global styles. Keep server credentials and Firebase Admin imports out of client components.
+
+## Verification
+
+No automated test framework, test script, or coverage threshold is configured.
+
+- Run the narrowest relevant checks first. Run `npm run build` before considering implementation work complete when practical; report if skipped and why.
+- Run lint when configured and relevant. Do not treat the existing lint script as evidence that ESLint is configured.
+- For UI changes, verify affected responsive states and storefront/admin flows.
+- For payment, webhook, authentication, Firebase, or shipping changes, explicitly report what was and was not tested. Cover affected stock availability, checkout, webhook order creation, and shipping-label behavior using development credentials, subject to the external-service restriction above.
+- Never claim a check passed unless you actually ran it.
+
+## Change Reporting
+
+At the end of implementation tasks, summarize what changed, the files changed, commands/checks run and their results, and remaining risks or unverified behavior.
+
+## Commit & Pull Request Guidelines
+
+History uses short, lowercase descriptions such as `fix empty description in stripe checkout`; follow this concise, action-oriented style. Pull requests should describe behavior changes, link relevant issues, list validation performed, and include screenshots for UI changes. Call out environment or service configuration changes.
+
+## Security Invariants & Configuration
+
+- Client-side admin route protection (`src/hooks/useAdminAuth.ts`) is not server authorization.
+- Privileged API routes must independently authenticate and authorize callers; do not rely on client redirects or hidden UI.
+- Firebase Admin bypasses Firestore client security rules; server code must enforce access controls.
+- Never expose server credentials or Firebase Admin imports to client components.
+- Never log secrets, credentials, payment information, or customer personal data.
+
+Configure ignored `.env.local` using variables referenced in `src/lib/`, API handlers, and the README. No environment template is checked in. Never commit service-account credentials, secret API keys, or customer data. Reserve `NEXT_PUBLIC_` variables for browser-visible configuration.
