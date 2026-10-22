@@ -33,6 +33,16 @@ This is a Next.js 14 App Router storefront using TypeScript, Firebase, Stripe, a
 - `npm run lint`: invoke Next.js ESLint; no ESLint configuration is currently checked in, so initial setup may be required.
 - `stripe listen --forward-to localhost:3000/api/webhooks/stripe`: forward development payment events; configure the emitted signing secret locally.
 
+## Manual Production Deployment
+
+- Work directly on `main`; committing and pushing to GitHub must not automatically deploy production. Keep the Vercel project's Git integration disconnected. Do not reconnect it or add automatic deployment triggers without explicit approval.
+- Commit/push approval does not authorize deployment. Deploy only when the user explicitly requests deployment or says "sync production"; that request authorizes the deployment without another routine confirmation.
+- "Sync production" means deploy the latest committed and pushed GitHub `main`, resolved to a specific commit SHA. Use a clean temporary checkout of that SHA; exclude uncommitted changes, local environment files, and local data. Do not implicitly commit or push outstanding work.
+- Review changes since the last production deployment and run appropriate verification with isolated test configuration. Stop and report material failures or missing required production configuration before deploying.
+- Authenticate the Vercel CLI and link the clean checkout to the existing `jewelry` project in the verified `mathieu1120s-projects` scope. Confirm project identity before any deployment; do not create a replacement project.
+- Run `vercel deploy --prod` from that checkout, using the existing project's Production environment variables and remote build. Do not copy `.env.local`, promote a preview build, or sync production data.
+- Wait for deployment completion, verify production domain assignment and safe storefront pages, and report the deployed SHA, URL, verification results, and remaining risks. Do not purchase labels or perform real checkouts as smoke tests.
+
 ## Coding Style & Naming Conventions
 
 Use strict TypeScript, two-space indentation, double quotes, and semicolons, matching existing files. Use PascalCase for components and types, camelCase for functions and variables, and `use` prefixes for hooks. Follow App Router filenames (`page.tsx`, `layout.tsx`, `route.ts`) and use `@/` imports for modules under `src/`. Keep shared types in `src/types/` and monetary amounts in integer cents. Use Tailwind utilities and existing global styles. Keep server credentials and Firebase Admin imports out of client components.
