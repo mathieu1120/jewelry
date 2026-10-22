@@ -2,10 +2,16 @@
 
 ## Agent Operating Rules
 
-- Inspect relevant existing code before modifying it.
+- Investigate the request and relevant existing code before proposing changes.
+- For non-trivial development tasks, present an implementation plan before changing files. Where meaningful design or implementation tradeoffs exist, present 2–3 options, explain their tradeoffs, and recommend one.
+- Stop and explicitly ask the user to approve the plan or choose an option. Do not modify implementation files until the user explicitly approves; the initial task request alone is not plan approval.
+- After approval, implement the chosen plan autonomously, run appropriate verification, and fix problems caused by the implementation. Seek renewed approval if meaningful changes to the approved scope or design become necessary.
+- Review the resulting diff for correctness, security, and unintended changes before reporting completion.
+- Trivial changes where planning adds no meaningful value do not require a formal plan or approval step.
 - Make the smallest change necessary for the requested task; do not refactor unrelated code.
 - Add dependencies only when necessary to complete the task.
-- Do not commit or push unless explicitly requested.
+- After an approved implementation is complete, verification has finished, and the resulting diff has been reviewed, if the change is ready, explicitly ask the user whether you may commit and push it.
+- Do not commit or push until the user explicitly approves those actions. Approval of an implementation plan does not authorize committing or pushing.
 - Do not modify production data or external services unless explicitly requested.
 
 ## Project Structure & Module Organization
